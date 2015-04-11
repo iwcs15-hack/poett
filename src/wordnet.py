@@ -41,6 +41,28 @@ def get_hyponyms(lemma):
             hypo.add(lem.name())
     return(hypo)
 
+def get_immediate_hyponyms(synsets):
+    """
+    Given a set of synsets,
+    return immediate hyponyms of those synsets
+    """
+    hypo = set()
+    for s in synsets:
+        hypo |= set(s.hyponyms())
+    return hypo
+
+def get_hyponyms_upto(lemma, n=3):
+    """
+    Given a string,
+    return all hyponyms up to a given depth n
+    """
+    current = wn.synsets(lemma)
+    all = {lem.name() for s in current for lem in s.lemmas()}
+    for i in range(n):
+        current = get_immediate_hyponyms(current)
+        all |= {lem.name() for s in current for lem in s.lemmas()}
+    return all
+
 def get_similar(lemma):
     """
     Given an input string,
