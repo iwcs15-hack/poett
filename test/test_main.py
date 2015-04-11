@@ -2,6 +2,7 @@
 
 import nltk
 import json
+from nltk.tag.brill import Pos
 
 
 with open('london-marathon-2015-03-18') as f:
@@ -9,10 +10,15 @@ with open('london-marathon-2015-03-18') as f:
         tweet = json.loads(line)
         
         # Tokenize Text
-        tokens = tweet['text'].split(' ')
+        text = tweet['text'].replace('\n', ' ')
+        text = text.replace('?', ' ?')
+        text = text.replace('...', ' ')
+        tokens = text.split(' ')
         
         # Get POS Tags
         posTags = nltk.pos_tag(tokens)
+        
+        print(posTags)
         
         '''
         tokenization = nltk.word_tokenize(tweet['text']) 
