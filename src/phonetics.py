@@ -58,3 +58,17 @@ def rhymes(word):
     for pron in cmu[word]:
         output |= RHYME_SETS[ending(pron)]
     return output
+
+def find_rhymes(words):
+    """
+    Given a set of words,
+    find subsets of words that rhyme
+    """
+    endings = defaultdict(set)
+    for w in words:
+        try:
+            for pron in cmu[w]:
+                endings[ending(pron)].add(w)
+        except KeyError:
+            print(w, 'not found in CMU dictionary')
+    return [x for x in endings.values() if len(x) > 1]
