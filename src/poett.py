@@ -30,7 +30,7 @@ def generatePoem(cnouns,anouns,tverbs,iverbs,adjs):
 
     l = randint(1,4)
     poem = ''
-    for i in range(0, l):
+    for i in range(l):
         pattern = choice(patterns)
         output = ''
         for x in pattern:
@@ -50,7 +50,9 @@ def generatePoem(cnouns,anouns,tverbs,iverbs,adjs):
                 output += choice(interjections)
             else:
                 output += x
-        poem +=  output + '\n'
+        poem += output
+        if i < (l-1):
+            poem += '\n'
     return poem
 
 print(generatePoem(cnouns,anouns,tverbs,iverbs,adjs))
