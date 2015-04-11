@@ -3,12 +3,20 @@
 import nltk
 import json
 
+
 with open('london-marathon-2015-03-18') as f:
     for line in f:
         tweet = json.loads(line)
-        print(tweet['text'])
-        print(nltk.word_tokenize(tweet['text']))
-        tokenization = nltk.word_tokenize(tweet['text'])
+        
+        # Tokenize Text
+        tokens = tweet['text'].split(' ')
+        
+        # Get POS Tags
+        posTags = nltk.pos_tag(tokens)
+        
+        '''
+        tokenization = nltk.word_tokenize(tweet['text']) 
+        #tweet['text'].split(" ")
         
         at = False
         hashTag = False
@@ -28,5 +36,7 @@ with open('london-marathon-2015-03-18') as f:
                 hashTag = True
             else:
                 tweetTokenization.append(token)
+                '''
                 
-        print(tweetTokenization)
+        
+        
