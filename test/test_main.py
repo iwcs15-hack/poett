@@ -14,14 +14,12 @@ with open('london-marathon-2015-03-18') as f:
         text = text.replace('?', ' ?')
         text = text.replace('!', ' !')
         text = text.replace('...', ' ')
-        text = re.sub('\\s\(', ' ( ', text)
+        text = re.sub("[^;:\-'^]\(", ' ( ', text)
         text = re.sub('([A-Za-z0-9])\)', '\g<1> ) ', text)
         tokens = text.split(' ')
         
         # Get POS Tags
         posTags = nltk.pos_tag(tokens)
-        
-        #print(posTags)
         
         '''
         tokenization = nltk.word_tokenize(tweet['text']) 
