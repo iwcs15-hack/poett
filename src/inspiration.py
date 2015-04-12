@@ -49,7 +49,7 @@ def haikuFromTweet(tweet, patterns=default_patterns):
     words = [['o','oh','ooh','ah','lord','god','damn'], # interjections
                 nouns, # abstract nouns
                 verbs, # intransitive verbs
-                adjjs,
-                advbs] # adverbs minus -ly
+                adjjs, # adjectives
+                advbs] # adverbs
     
     return generateHaiku(words, patterns)
