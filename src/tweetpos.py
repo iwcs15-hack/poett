@@ -17,7 +17,7 @@ def tokenizeTweet(text):
         text = text.replace('...', ' ')
         text = re.sub("[^;:\-,'^]\(", ' ( ', text)
         text = re.sub('([A-Za-z0-9])\)', '\g<1> ) ', text)
-        text = re.sub('http://[^ ]+', '', text)
+        text = re.sub('https?:[^ ]+', '', text)
         tokens = text.split(' ')
 
         '''
