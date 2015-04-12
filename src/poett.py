@@ -1,58 +1,47 @@
-from random import choice
-from random import randint
+from random import choice, randint
+#from phonetics import syllables
 
-cnouns=['shark','whale','tuna']
-anouns=['adventure','courage','endurance']
-tverbs=['command','view','lead']
-iverbs=['travel','sail','wave']
-adjs=['big','small','old']
-
-def generatePoem(cnouns,anouns,tverbs,iverbs,adjs):
-    adverbs=['quickly','loudly','calmly','quietly','roughly']
-    interjections=['o','oh','ooh','ah','lord','god','damn']
-
-
-    p1=['The ',5,' ',1,' ',6,' ',3,'s ','the ',1,'.']
-    p2=[5,', ',5,' ',1,'s ',6,' ',3, ' a ',5,', ',5,' ',1]
-    p3=['Why does the ',1, ' ',4,'?']
-    p4=[4,' ',6,' like a ',5,' ',1,'.']
-    p5=[2,', ',2,' and ',2,'.']
-    p6=['Where is the ',5,' ',1,'?']
-    p7=['All ',1,'s ',3,' ',5,', ',5,' ',1,'s.']
-    p8=['Never ',3,' a ',1,'.']
-    p9=[2,' is a ',5, ' ',1,'.']
-    p10=[9,', ',2, '!']
-    p11=[1,'s ',4,'!']
-    p12=['The ',1,' ',4,'s like a ',5,' ',1,'. ']
-    p13=[1,'s ',4,' like ',5,' ',1,'s.']
-
-    patterns=[p1,p2,p3,p4,p5,p6,p7,p8,p9,p10,p11,p12,p13]
-
-    l = randint(1,4)
+def generatePoem(word_sets, pattern_list):
+    """
+    From sets of words and patterns, generate a poem 
+    """
     poem = ''
+    l = randint(1,4)
     for i in range(l):
-        pattern = choice(patterns)
-        output = ''
+        pattern = choice(pattern_list)
+        line = ''
         for x in pattern:
-            if x==1:
-                output += choice(cnouns)
-            elif x==2:
-                output += choice(anouns)
-            elif x==3:
-                output += choice(tverbs)
-            elif x==4:
-                output += choice(iverbs)
-            elif x==5:
-                output += choice(adjs)
-            elif x==6:
-                output += choice(adverbs)
-            elif x==9:
-                output += choice(interjections)
+            if type(x) == int:
+                line += choice(word_sets[x])
             else:
-                output += x
-        poem += output
+                line += x
+        poem += line.title()
         if i < (l-1):
             poem += '\n'
     return poem
 
-print(generatePoem(cnouns,anouns,tverbs,iverbs,adjs))
+
+if __name__ == '__main__':
+    words = [['o','oh','ooh','ah','lord','god','damn'], # interjections
+             ['shark','whale','tuna'], # concrete nouns
+             ['adventure','courage','endurance'], # abstract nouns
+             ['command','view','lead'], # transitive verbs
+             ['travel','sail','wave'], # intransitive verbs
+             ['big','small','old'], # adjectives
+             ['quickly','loudly','calmly','quietly','roughly']] # adverbs
+    
+    patterns = [['The ',5,' ',1,' ',6,' ',3,'s ','the ',1,'.'],
+                [5,', ',5,' ',1,'s ',6,' ',3, ' a ',5,', ',5,' ',1],
+                ['Why does the ',1, ' ',4,'?'],
+                [4,' ',6,' like a ',5,' ',1,'.'],
+                [2,', ',2,' and ',2,'.'],
+                ['Where is the ',5,' ',1,'?'],
+                ['All ',1,'s ',3,' ',5,', ',5,' ',1,'s.'],
+                ['Never ',3,' a ',1,'.'],
+                [2,' is a ',5, ' ',1,'.'],
+                [0,', ',2, '!'],
+                [1,'s ',4,'!'],
+                ['The ',1,' ',4,'s like a ',5,' ',1,'. '],
+                [1,'s ',4,' like ',5,' ',1,'s.']]
+    
+    print(generatePoem(words, patterns))

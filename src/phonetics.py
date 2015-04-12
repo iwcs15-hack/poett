@@ -1,4 +1,4 @@
-from nltk import cmudict
+from nltk.corpus import cmudict
 cmu = cmudict.dict()
 from collections import defaultdict
 
