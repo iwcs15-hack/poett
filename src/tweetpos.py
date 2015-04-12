@@ -7,10 +7,11 @@ import re
 
 
         
-def tokenizeTweet(text)
+def tokenizeTweet(text):
+    
         """ Tokenize Text
         """
-        text = tweet['text'].replace('\n', ' ')
+        text = text.replace('\n', ' ')
         text = text.replace('?', ' ?')
         text = text.replace('!', ' !')
         text = text.replace('...', ' ')
@@ -23,9 +24,7 @@ def tokenizeTweet(text)
 
 
 def getTweetPOS(line):
-    tweet = json.loads(line)
-    tokens = tokenizeTweet(tweet)
-    
+  
     # Get POS Tags
     posTags = nltk.pos_tag(tokens)
     
@@ -42,6 +41,19 @@ def getTweetPOS(line):
             posDict[posTag[1]].append(posTag[0])
     
     return posDict
+
+
+
+with open('london-marathon-2015-03-18') as f:
+    for line in f:
+        tweet = json.loads(line)
+        text = tweet['text']
+        tokens = tokenizeTweet(text)
+        # Get POS Tags
+        posTags = getTweetPOS(tokens)
+        print(posTags)
+
+
 
     '''
     tokenization = nltk.word_tokenize(tweet['text']) 
