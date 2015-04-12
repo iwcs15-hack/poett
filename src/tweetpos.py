@@ -20,6 +20,29 @@ def tokenizeTweet(text):
         text = re.sub('http://[^ ]+', '', text)
         tokens = text.split(' ')
 
+        '''
+        tokenization = nltk.word_tokenize(tweet['text']) 
+        #tweet['text'].split(" ")
+        
+        at = False
+        hashTag = False
+        
+        tweetTokenization = []
+        
+        for token in tokenization:
+            if at == True: 
+                at = False
+                tweetTokenization.append('@'+token)
+            elif hashTag == True: 
+                hashTag = False
+                tweetTokenization.append('#'+token)
+            elif token =='@':
+                at = True
+            elif token == '#':
+                hashTag = True
+            else:
+                tweetTokenization.append(token)
+                '''
         return(tokens)
 
 
@@ -43,38 +66,15 @@ def getTweetPOS(line):
     return posDict
 
 
+if __name__ == "__main__":
+    with open('london-marathon-2015-03-18') as f:
+        for line in f:
+            tweet = json.loads(line)
+            text = tweet['text']
+            tokens = tokenizeTweet(text)
+            # Get POS Tags
+            posTags = getTweetPOS(tokens)
+            print(posTags)
 
-with open('london-marathon-2015-03-18') as f:
-    for line in f:
-        tweet = json.loads(line)
-        text = tweet['text']
-        tokens = tokenizeTweet(text)
-        # Get POS Tags
-        posTags = getTweetPOS(tokens)
-        print(posTags)
 
 
-
-    '''
-    tokenization = nltk.word_tokenize(tweet['text']) 
-    #tweet['text'].split(" ")
-    
-    at = False
-    hashTag = False
-    
-    tweetTokenization = []
-    
-    for token in tokenization:
-        if at == True: 
-            at = False
-            tweetTokenization.append('@'+token)
-        elif hashTag == True: 
-            hashTag = False
-            tweetTokenization.append('#'+token)
-        elif token =='@':
-            at = True
-        elif token == '#':
-            hashTag = True
-        else:
-            tweetTokenization.append(token)
-            '''
