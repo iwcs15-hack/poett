@@ -19,6 +19,11 @@ def tokenizeTweet(text):
         text = re.sub('([A-Za-z0-9])\)', '\g<1> ) ', text)
         text = re.sub('http://[^ ]+', '', text)
         tokens = text.split(' ')
+        
+        # Remove empty tokens
+        print(tokens)
+        tokens = list(filter(None, tokens))
+        print(tokens)
 
         '''
         tokenization = nltk.word_tokenize(tweet['text']) 
@@ -49,7 +54,7 @@ def tokenizeTweet(text):
 def getTweetPOS(line):
   
     # Get POS Tags
-    posTags = nltk.pos_tag(tokens)
+    posTags = nltk.pos_tag(line)
     
     posDict = dict()
     
@@ -75,7 +80,6 @@ def getTweetText(line):
 if __name__ == "__main__":
     with open('london-marathon-2015-03-18') as f:
         for line in f:
-            
             text = getTweetText(line)
             tokens = tokenizeTweet(text)
             # Get POS Tags
