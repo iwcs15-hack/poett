@@ -57,6 +57,7 @@ def rhymes(word):
     output = set()
     for pron in cmu[word]:
         output |= RHYME_SETS[ending(pron)]
+    output.remove(word)
     return output
 
 def find_rhymes(words):
