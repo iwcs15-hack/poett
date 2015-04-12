@@ -3,7 +3,7 @@
 import nltk
 import json
 import re
-
+from html.parser import HTMLParser
 
 
         
@@ -17,13 +17,12 @@ def tokenizeTweet(text):
         text = text.replace('...', ' ')
         text = re.sub("[^;:\-,'^]\(", ' ( ', text)
         text = re.sub('([A-Za-z0-9])\)', '\g<1> ) ', text)
-        text = re.sub('https?:[^ ]+', '', text)
+        text = re.sub('http[s]?:[^ ]+', '', text)
+        text = re.sub('\u003e','',text)
         tokens = text.split(' ')
         
         # Remove empty tokens
-        print(tokens)
         tokens = list(filter(None, tokens))
-        print(tokens)
 
         '''
         tokenization = nltk.word_tokenize(tweet['text']) 
@@ -77,9 +76,13 @@ def getTweetPOS(line):
 def getTweetText(line):
     tweet = json.loads(line)
     if tweet['text'].startswith("RT"):
-        return tweet['retweeted_status']['text']
+        text = tweet['retweeted_status']['text']
     else:
-        return tweet['text']
+        text = tweet['text']
+    
+    text = HTMLParser().unescape(text)
+    text = text.encode('ascii','ignore').decode('utf8','ignore') #decode('unicode_escape').encode('ascii','ignore')
+    return text
     
 if __name__ == "__main__":
     with open('london-marathon-2015-03-18') as f:
