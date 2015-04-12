@@ -65,12 +65,18 @@ def getTweetPOS(line):
     
     return posDict
 
-
+def getTweetText(line):
+    tweet = json.loads(line)
+    if tweet['text'].startswith("RT"):
+        return tweet['retweeted_status']['text']
+    else:
+        return tweet['text']
+    
 if __name__ == "__main__":
     with open('london-marathon-2015-03-18') as f:
         for line in f:
-            tweet = json.loads(line)
-            text = tweet['text']
+            
+            text = getTweetText(line)
             tokens = tokenizeTweet(text)
             # Get POS Tags
             posTags = getTweetPOS(tokens)
