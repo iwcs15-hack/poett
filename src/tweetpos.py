@@ -17,7 +17,7 @@ def tokenizeTweet(text):
         text = text.replace('...', ' ')
         text = re.sub("[^;:\-,'^]\(", ' ( ', text)
         text = re.sub('([A-Za-z0-9])\)', '\g<1> ) ', text)
-        text = re.sub('http://[^ ]+', '', text)
+        text = re.sub('https?:[^ ]+', '', text)
         tokens = text.split(' ')
         
         # Remove empty tokens
@@ -52,6 +52,10 @@ def tokenizeTweet(text):
 
 
 def getTweetPOS(line):
+    """
+    Given a list of tokens,
+    return a dictionary from tags to sets of tokens
+    """
   
     # Get POS Tags
     posTags = nltk.pos_tag(line)
@@ -61,12 +65,12 @@ def getTweetPOS(line):
     for posTag in posTags:
         if posTag[0].startswith("@"):
             if not 'NNP' in posDict:
-                posDict['NNP'] = list()
-            posDict['NNP'].append(posTag[0])      
+                posDict['NNP'] = set()
+            posDict['NNP'].add(posTag[0])      
         else:
             if not posTag[1] in posDict:
-                posDict[posTag[1]] =list()
-            posDict[posTag[1]].append(posTag[0])
+                posDict[posTag[1]] = set()
+            posDict[posTag[1]].add(posTag[0])
     
     return posDict
 
