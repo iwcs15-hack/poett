@@ -88,34 +88,51 @@ def generateHaiku(word_sets, pattern_list):
     lines.append(generateHaikuLine(word_sylls, five))
     
     return('\n'.join(lines))
-    
 
-def analogyPoem(noun1, noun2, model, word_sets):
+
+
+default_words = [['o','oh','ooh','ah','lord','god','damn'], # interjections 0
+             ['shark','whale','tuna'], # concrete nouns 1
+             ['adventure','courage','endurance'], # abstract nouns 2
+             ['command','view','lead'], # transitive verbs 3
+             ['travel','sail','wave'], # intransitive verbs 4
+             ['big','small','old'], # adjectives 5
+             ['quickly','loudly','calmly','quietly','roughly']] # adverbs 6
+
+default_patterns=[['The ','noun1',' ',3,'s like a ','noun2', '\n',
+                   'The ','noun3', ' ',3,'s like a ','noun4'],
+                  ['Is it ',5,' that ','noun1','s ',3,' ','noun2','s?\n',
+                   'The ','noun3',' ',3,'s ',5,' ','noun4','s.']] 
+
+model_path = os.path.join(os.path.dirname(__file__), 'analogyResources', 'GoogleNews-vectors-negative300.bin')
+model = Word2Vec.load_word2vec_format(model_path, binary=True)
+
+def analogyPoem(noun1, noun2, model=model, word_sets=default_words, patterns=default_patterns):
     """
     Picks randomly between patterns
     Puts noun1 in the first noun slot, noun2 in the second noun slot
     Finds a noun that rhymes with noun2 for the 4th noun slot
     Finds a noun that matches the analogy for the 3rd noun slot
     """
-    patterns=[['The ',noun1,' ',3,'s like a ',noun2, '\n',
-                'The ','noun3', ' ',3,'s like a ','noun4'],
-              ['Is it ',5,' that ',noun1,'s ',3,' ',noun2,'s?\n',
-                'The ','noun3',' ',3,'s ',5,' ','noun4','s.']
-            ]
     poem= ''
-    noun4=''
     pattern = choice(patterns)
-    for n, x in enumerate(pattern):
-        if x == 'noun4':
-            while noun4=='':
-                noun = choice(list(rhymes(noun2)))
-                if noun in model:
-                    noun4= noun
-                    pattern[n] = noun4
+    
+    noun4 = ''
+    while noun4=='':
+        noun = choice(list(rhymes(noun2)))
+        if noun in model:
+            noun4= noun
+    
     for x in pattern:
         word = None
-        if x == 'noun3':
+        if x == 'noun1':
+            poem += noun1
+        elif x == 'noun2':
+            poem += noun2
+        elif x == 'noun3':
             poem += model.most_similar(positive=[noun1,noun4],negative=[noun2])[0][0]
+        elif x == 'noun4':
+            poem += noun4
         elif type(x) == int:
             poem += choice(word_sets[x])
         else:
@@ -125,56 +142,6 @@ def analogyPoem(noun1, noun2, model, word_sets):
 
 
 if __name__ == '__main__':
-    """
-    words = [['o','oh','ooh','ah','lord','god','damn'], # interjections 0
-             ['shark','whale','tuna'], # concrete nouns 1
-             ['adventure','courage','endurance'], # abstract nouns 2
-             ['command','view','lead'], # transitive verbs 3
-             ['travel','sail','wave'], # intransitive verbs 4
-             ['big','small','old'], # adjectives 5
-             ['quickly','loudly','calmly','quietly','roughly']] # adverbs 6
-
-    patterns = [['The ',5,' ',1,' ',6,' ',3,'s ','the ',1,'.'],
-                [5,', ',5,' ',1,'s ',6,' ',3, ' a ',5,', ',5,' ',1],
-                ['Why does the ',1, ' ',4,'?'],
-                [4,' ',6,' like a ',5,' ',1,'.'],
-                [2,', ',2,' and ',2,'.'],
-                ['Where is the ',5,' ',1,'?'],
-                ['All ',1,'s ',3,' ',5,', ',5,' ',1,'s.'],
-                ['Never ',3,' a ',1,'.'],
-                [2,' is a ',5, ' ',1,'.'],
-                [0,', ',2, '!'],
-                [1,'s ',4,'!'],
-                ['The ',1,' ',4,'s like a ',5,' ',1,'. '],
-                [1,'s ',4,' like ',5,' ',1,'s.']]
-    
-    words_ly = [['o','oh','ooh','ah','lord','god','damn'], # interjections
-                ['shark','whale','tuna'], # concrete nouns
-                ['adventure','courage','endurance'], # abstract nouns
-                ['command','view','lead'], # transitive verbs
-                ['travel','sail','wave'], # intransitive verbs
-                ['big','small','old'], # adjectives
-                ['quick','loud','calm','quiet','rough']] # adverbs minus -ly
-    
-    syll_pats =[[['The ',5,' ',1,' ',6,'ly ',3,'s ','the ',1,'.'], 3],
-                [[5,', ',5,' ',1,'s ',6,'ly ',3, ' a ',5,', ',5,' ',2], 1],
-                [['Why does the ',1, ' ',4,'?'], 3],
-                [[4,' ',6,'ly like a ',5,' ',1,'.'], 3],
-                [[2,', ',2,' and ',2,'.'], 1],
-                [['Where is the ',5,' ',1,'?'], 3],
-                [['All ',1,'s ',3,' ',5,', ',5,' ',1,'s.'], 1],
-                [['Never ',3,' a ',1,'.'], 2],
-                [[2,' is a ',5, ' ',1,'.'], 2],
-                [[0,', ',2, '!'], 0],
-                [[1,'s ',4,'!'], 0],
-                [['The ',1,' ',4,'s like a ',5,' ',1,'. '], 3],
-                [[1,'s ',4,' like ',5,' ',1,'s.'], 1]]
-    
-    print(generateHaiku(words_ly, syll_pats))
-    """
-
-    model_path = os.path.join(os.path.dirname(__file__), 'analogyResources', 'GoogleNews-vectors-negative300.bin')
-    model = Word2Vec.load_word2vec_format(model_path, binary=True)
     print(analogyPoem('darkness','night',model,words))
     print(analogyPoem('sea', 'mermaid', model,words))
     print(analogyPoem('death','lover', model, words))

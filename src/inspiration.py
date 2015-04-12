@@ -1,6 +1,7 @@
 from wordnet import get_similar
 from tweetpos import getPosDict
-from poett import generateHaiku
+from poett import generateHaiku, analogyPoem
+from random import choice
 from nltk.corpus import wordnet as wn, cmudict
 cmu = cmudict.dict()
 
@@ -53,3 +54,46 @@ def haikuFromTweet(tweet, patterns=default_patterns):
                 advbs] # adverbs
     
     return generateHaiku(words, patterns)
+
+
+default_analogies = [['The ','noun1',' ',2,'s like a ','noun2', '\n',
+                      'The ','noun3', ' ',2,'s like a ','noun4'],
+                     ['Is it ',3,' that ','noun1','s ',2,' ','noun2','s?\n',
+                      'The ','noun3',' ',2,'s ',3,' ','noun4','s.']]
+
+def analogyFromTweet(tweet, patterns=default_analogies):
+    pos = getPosDict(tweet)
+    nouns = grab(pos, ['NN','NNS','NNP','NNPS'])
+    verbs = grab(pos, ['VB','VBD','VBP','VBZ','VBN','VBG'])
+    adjjs = grab(pos, ['JJ','JJR','JJS'])
+    advbs = grab(pos, ['RB','RBR','RBS'])
+    
+    noun1 = choice(list(nouns))
+    
+    for n in nouns.copy():
+        nouns |= get_similar(n, wn.NOUN)
+    for v in verbs.copy():
+        verbs |= get_similar(v, wn.VERB)
+    for j in adjjs.copy():
+        adjjs |= get_similar(j, wn.ADJ)
+    for b in advbs.copy():
+        advbs |= get_similar(b, wn.ADV)
+    
+    for wordset in [nouns, verbs, adjjs, advbs]:
+        for x in wordset.copy():
+            if not x in cmu:
+                wordset.remove(x)
+    
+    nouns.remove(noun1)
+    
+    noun2 = choice(list(nouns))
+    
+    nouns.remove(noun2)
+    
+    words = [['o','oh','ooh','ah','lord','god','damn'], # interjections
+                nouns, # abstract nouns
+                verbs, # intransitive verbs
+                adjjs, # adjectives
+                advbs] # adverbs
+    
+    return analogyPoem(noun1, noun2, word_sets=words, patterns=patterns)
