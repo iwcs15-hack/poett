@@ -4,6 +4,7 @@ import nltk
 import json
 import re
 from html.parser import HTMLParser
+import random
 
 wn = nltk.corpus.wordnet
 
@@ -101,7 +102,7 @@ def getPosDict(text):
 
 def getTweetText(line):
     tweet = json.loads(line)
-    if tweet['text'].startswith("RT"):
+    if tweet['text'].startswith("RT") and 'retweeted_status' in tweet:
         text = tweet['retweeted_status']['text']
     else:
         text = tweet['text']
@@ -111,13 +112,43 @@ def getTweetText(line):
     return text
     
 if __name__ == "__main__":
-    with open('london-marathon-2015-03-18') as f:
+    with open('2015-03-22') as f:
         for line in f:
             text = getTweetText(line)
+            
+            #text = "First @LDN_Muscle lifting session since christmas due to London Marathon training, god I've missed it! Completely different kind of Work"
+            
             tokens = tokenizeTweet(text)
             # Get POS Tags
             posTags = getTweetPOS(tokens)
+            
             print(posTags)
-
-
-
+            
+            if 'CD' in posTags:
+                cd = random.sample(posTags['CD'], 1)[0]
+            else:
+                cd = 2
+            
+            if 'NN' in posTags:
+                nn = random.sample(posTags['NN'],1)[0]
+            else:
+                nn = 'road'
+            
+            if 'NNP' in posTags:
+                nnp = random.sample(posTags['NNP'],1)[0]
+            else:
+                nnp = 'I'
+                
+            if 'RB' in posTags:
+                rb = random.sample(posTags['RB'],1)[0]
+            else:
+                rb = 'less'
+            
+            if 'VBG' in posTags:
+                vbg = random.sample(posTags['VBG'],1)[0]
+            else:
+                vbg = 'difference'
+            
+            
+            #print(posTags)
+            print(str(cd) + ' ' + nn + 's diverged in a wood, and ' + nnp + '--\n' + nnp + ' took the one ' + rb + ' traveled by,\n' + 'And that has made all the ' + vbg + '\n')
