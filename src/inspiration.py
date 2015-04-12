@@ -11,7 +11,21 @@ def grab(word_dict, tags):
             output |= word_dict[t]
     return output
 
-def haikuFromTweet(tweet):
+default_patterns=[[['The ',3,' ',1,' ',3,'ly ',2,'s ','the ',1,'.'], 3],
+                  [[3,', ',3,' ',1,'s ',3,'ly ',3, ' a ',3,', ',3,' ',1], 1],
+                  [['Why does the ',1, ' ',2,'?'], 3],
+                  [[2,' ',3,'ly like a ',3,' ',1,'.'], 3],
+                  [[1,', ',1,' and ',1,'.'], 1],
+                  [['Where is the ',3,' ',1,'?'], 3],
+                  [['All ',1,'s ',2,' ',3,', ',3,' ',1,'s.'], 1],
+                  [['Never ',2,' a ',1,'.'], 3],
+                  [[1,' is a ',3, ' ',1,'.'], 2],
+                  [[0,', ',1, '!'], 0],
+                  [[1,'s ',2,'!'], 0],
+                  [['The ',1,' ',2,'s like a ',3,' ',1,'. '], 3],
+                  [[1,'s ',2,' like ',3,' ',1,'s.'], 1]]
+
+def haikuFromTweet(tweet, patterns=default_patterns):
     pos = getPosDict(tweet)
     nouns = grab(pos, ['NN','NNS','NNP','NNPS'])
     verbs = grab(pos, ['VB','VBD','VBP','VBZ','VBN','VBG'])
@@ -32,26 +46,10 @@ def haikuFromTweet(tweet):
             if not x in cmu:
                 wordset.remove(x)
     
-    words_ly = [['o','oh','ooh','ah','lord','god','damn'], # interjections
-                nouns, # concrete nouns
+    words = [['o','oh','ooh','ah','lord','god','damn'], # interjections
                 nouns, # abstract nouns
-                verbs, # transitive verbs
                 verbs, # intransitive verbs
-                adjjs, # adjectives
-                adjjs] # adverbs minus -ly
-        
-    syll_pats =[[['The ',5,' ',1,' ',6,'ly ',3,'s ','the ',1,'.'], 3],
-                [[5,', ',5,' ',1,'s ',6,'ly ',3, ' a ',5,', ',5,' ',2], 1],
-                [['Why does the ',1, ' ',4,'?'], 3],
-                [[4,' ',6,'ly like a ',5,' ',1,'.'], 3],
-                [[2,', ',2,' and ',2,'.'], 1],
-                [['Where is the ',5,' ',1,'?'], 3],
-                [['All ',1,'s ',3,' ',5,', ',5,' ',1,'s.'], 1],
-                [['Never ',3,' a ',1,'.'], 3],
-                [[2,' is a ',5, ' ',1,'.'], 2],
-                [[0,', ',2, '!'], 0],
-                [[1,'s ',4,'!'], 0],
-                [['The ',1,' ',4,'s like a ',5,' ',1,'. '], 3],
-                [[1,'s ',4,' like ',5,' ',1,'s.'], 1]]
+                adjjs,
+                advbs] # adverbs minus -ly
     
-    return generateHaiku(words_ly, syll_pats)
+    return generateHaiku(words, patterns)
