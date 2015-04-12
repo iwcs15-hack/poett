@@ -4,17 +4,27 @@ import nltk
 import json
 import re
 
+
+
+        
+def tokenizeTweet(text)
+        """ Tokenize Text
+        """
+        text = tweet['text'].replace('\n', ' ')
+        text = text.replace('?', ' ?')
+        text = text.replace('!', ' !')
+        text = text.replace('...', ' ')
+        text = re.sub("[^;:\-,'^]\(", ' ( ', text)
+        text = re.sub('([A-Za-z0-9])\)', '\g<1> ) ', text)
+        text = re.sub('http://[^ ]+', '', text)
+        tokens = text.split(' ')
+
+        return(tokens)
+
+
 def getTweetPOS(line):
     tweet = json.loads(line)
-    
-    # Tokenize Text
-    text = tweet['text'].replace('\n', ' ')
-    text = text.replace('?', ' ?')
-    text = text.replace('!', ' !')
-    text = text.replace('...', ' ')
-    text = re.sub("[^;:\-'^]\(", ' ( ', text)
-    text = re.sub('([A-Za-z0-9])\)', '\g<1> ) ', text)
-    tokens = text.split(' ')
+    tokens = tokenizeTweet(tweet)
     
     # Get POS Tags
     posTags = nltk.pos_tag(tokens)
