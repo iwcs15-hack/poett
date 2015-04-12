@@ -134,7 +134,7 @@ def analogyPoem(noun1, noun2, model=model, word_sets=default_words, patterns=def
         elif x == 'noun4':
             poem += noun4
         elif type(x) == int:
-            poem += choice(word_sets[x])
+            poem += choice(list(word_sets[x]))
         else:
             poem += x
     return poem
