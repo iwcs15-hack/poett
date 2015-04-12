@@ -4,7 +4,7 @@ import nltk
 import json
 import re
 
-
+wn = nltk.corpus.wordnet
 
         
 def tokenizeTweet(text):
@@ -46,7 +46,7 @@ def tokenizeTweet(text):
         return(tokens)
 
 
-def getTweetPOS(line):
+def getTweetPOS(line, lemmatize=False):
     """
     Given a list of tokens,
     return a dictionary from tags to sets of tokens
@@ -54,6 +54,22 @@ def getTweetPOS(line):
   
     # Get POS Tags
     posTags = nltk.pos_tag(line)
+    
+    # Lemmatize if required
+    if lemmatize:
+        for n, x in enumerate(posTags):
+            token, tag = x
+            lemma = None
+            if tag in ['VB','VBD','VBN','VBG','VBZ','VBP']:
+                lemma = wn.morphy(token,wn.VERB)
+            elif tag in ['NN', 'NNS', 'NNP', 'NNPS']:
+                lemma = wn.morphy(token,wn.NOUN)
+            elif tag in ['JJ', 'JJR', 'JJS']:
+                lemma = wn.morphy(token,wn.ADJ)
+            elif tag in ['RB', 'RBR', 'RBS']:
+                lemma = wn.morphy(token,wn.ADV)
+            if lemma:
+                posTags[n] = (lemma, tag)
     
     posDict = dict()
     
@@ -68,6 +84,14 @@ def getTweetPOS(line):
             posDict[posTag[1]].add(posTag[0])
     
     return posDict
+
+
+def getPosDict(text):
+    """
+    From raw text, return a dict from POS tags to sets of lemmas
+    """
+    return getTweetPOS(tokenizeTweet(text), True)
+
 
 def getTweetText(line):
     tweet = json.loads(line)

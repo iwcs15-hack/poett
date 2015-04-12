@@ -55,7 +55,7 @@ def generateHaiku(word_sets, pattern_list):
         for w in s:
             for n in syllables(w):
                 word_sylls[-1][n].add(w)
-    word_sylls = [{x:list(y) for x,y in l.items()} for l in word_sylls]
+    word_sylls = [{x:list(y) for x,y in l.items()} for l in word_sylls] # Change defaultdict of sets to dict of lists
     # Calculate what numbers of syllables are possible for each pattern
     for p, n in pattern_list:
         previous = {n:{tuple()}}
