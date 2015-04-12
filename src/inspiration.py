@@ -61,14 +61,18 @@ default_analogies = [['The ','noun1',' ',2,'s like a ','noun2', '\n',
                      ['Is it ',3,' that ','noun1','s ',2,' ','noun2','s?\n',
                       'The ','noun3',' ',2,'s ',3,' ','noun4','s.']]
 
-def analogyFromTweet(tweet, patterns=default_analogies):
+model_path = os.path.join(os.path.dirname(__file__), 'analogyResources', 'GoogleNews-vectors-negative300.bin')
+model = Word2Vec.load_word2vec_format(model_path, binary=True)
+
+def analogyFromTweet(tweet, patterns=default_analogies, model=model):
     pos = getPosDict(tweet)
     nouns = grab(pos, ['NN','NNS','NNP','NNPS'])
     verbs = grab(pos, ['VB','VBD','VBP','VBZ','VBN','VBG'])
     adjjs = grab(pos, ['JJ','JJR','JJS'])
     advbs = grab(pos, ['RB','RBR','RBS'])
     
-    noun1 = choice(list(nouns))
+    
+    noun1 = choice([x for x in nouns if x in model])
     
     for n in nouns.copy():
         nouns |= get_similar(n, wn.NOUN)
@@ -86,7 +90,7 @@ def analogyFromTweet(tweet, patterns=default_analogies):
     
     nouns.remove(noun1)
     
-    noun2 = choice(list(nouns))
+    noun2 = choice([x for x in nouns if x in model])
     
     nouns.remove(noun2)
     
