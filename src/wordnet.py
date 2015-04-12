@@ -63,13 +63,17 @@ def get_hyponyms_upto(lemma, n=3):
         all |= {lem.name() for s in current for lem in s.lemmas()}
     return all
 
-def get_similar(lemma):
+def get_similar(lemma, pos=None):
     """
     Given an input string,
     return similar lemmas
     """
     similar = set()
-    for sense in wn.synsets(lemma)[:2]:
+    if pos:
+        syns = wn.synsets(lemma, pos)
+    else:
+        syns = wn.synsets(lemma)
+    for sense in syns:
         for hyper in sense.hypernyms():
             for hypo in hyper.hyponyms():
                 for new_lem in hypo.lemmas():
